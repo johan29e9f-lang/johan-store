@@ -1,51 +1,303 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>متجر جوهان للتقنية</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>متجر جوهان — E-Tech</title>
+  <meta name="description" content="أفضل معدات الحاسوب — لوحات مفاتيح، فأرات، بطاقات شاشة، SSD" />
+  <!-- Tailwind CDN (مناسب للبدء) -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    /* بعض اللمسات الخاصة */
+    .card-shadow { box-shadow: 0 6px 18px rgba(15,23,42,0.08); }
+    .blur-bg { backdrop-filter: blur(6px); }
+    /* زر صغير تحسين اللمس في الموبايل */
+    button:active { transform: translateY(1px); }
+  </style>
 </head>
-<body class="bg-gray-100">
-  <header class="bg-white shadow p-4 flex justify-between items-center">
-    <h1 class="text-2xl font-bold text-blue-600">متجر جوهان</h1>
-    <nav class="space-x-4 space-x-reverse">
-      <a href="#" class="text-gray-700 hover:text-blue-600">الرئيسية</a>
-      <a href="#" class="text-gray-700 hover:text-blue-600">العروض</a>
-      <a href="#" class="text-gray-700 hover:text-blue-600">الدعم</a>
-    </nav>
+<body class="bg-gray-50 text-gray-800">
+
+  <!-- NAV -->
+  <header class="bg-white shadow sticky top-0 z-40">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <a href="#/" class="text-xl font-extrabold text-indigo-600">متجر جوهان</a>
+        <nav class="hidden md:flex items-center gap-6 text-sm">
+          <a href="#/" class="hover:text-indigo-600">الرئيسية</a>
+          <a href="#/deals" class="hover:text-indigo-600">العروض</a>
+          <a href="#/support" class="hover:text-indigo-600">الدعم</a>
+        </nav>
+
+        <div class="flex items-center gap-3">
+          <div class="hidden sm:flex items-center bg-gray-100 rounded p-1 px-2">
+            <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            <input id="search" placeholder="ابحث عن منتج أو علامة" class="bg-transparent outline-none text-sm px-2" />
+          </div>
+
+          <button id="cartBtn" class="relative inline-flex items-center px-3 py-2 rounded-md hover:bg-gray-100">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 7h12l-2-7"/></svg>
+            <span id="cartCount" class="absolute -top-1 -right-1 bg-indigo-600 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">0</span>
+          </button>
+          <button id="menuBtn" class="md:hidden px-2 py-2">☰</button>
+        </div>
+      </div>
+    </div>
   </header>
 
-  <section class="p-6 text-center">
-    <h2 class="text-3xl font-bold">أفضل معدات الحاسوب هنا 🔥</h2>
-    <p class="text-gray-600 mt-2">لوحات مفاتيح • فأرات • بطاقات شاشة • SSD • وأكثر!</p>
-  </section>
+  <!-- MAIN -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Router target -->
+    <div id="app"></div>
+  </main>
 
-  <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
-    <div class="bg-white shadow rounded p-4">
-      <img src="https://via.placeholder.com/300x200" class="rounded" />
-      <h3 class="font-bold mt-3">فأرة ألعاب RGB</h3>
-      <p class="text-gray-600">سعر: 49$</p>
-      <button class="mt-3 bg-blue-600 text-white px-4 py-2 rounded">أضف للسلة</button>
+  <!-- CART Drawer -->
+  <div id="cartDrawer" class="fixed inset-y-0 left-0 w-full sm:w-96 transform -translate-x-full transition-transform z-50">
+    <div class="h-full bg-white shadow-xl flex flex-col">
+      <div class="p-4 border-b flex justify-between items-center">
+        <h3 class="font-semibold">سلة التسوق</h3>
+        <div class="flex gap-2">
+          <button id="clearCartBtn" class="text-red-500 text-sm">مسح</button>
+          <button id="closeCart" class="text-sm">إغلاق</button>
+        </div>
+      </div>
+      <div id="cartItems" class="p-4 flex-1 overflow-auto"></div>
+      <div class="p-4 border-t">
+        <div class="flex justify-between items-center">
+          <div class="text-sm text-gray-600">المجموع</div>
+          <div id="cartTotal" class="font-semibold">0.00 $</div>
+        </div>
+        <div class="mt-4">
+          <button id="checkoutBtn" class="w-full py-3 bg-indigo-600 text-white rounded">المتابعة للدفع</button>
+          <button id="payMethod" class="w-full mt-2 py-2 border rounded">طرق الدفع</button>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <div class="bg-white shadow rounded p-4">
-      <img src="https://via.placeholder.com/300x200" class="rounded" />
-      <h3 class="font-bold mt-3">لوحة مفاتيح ميكانيكية</h3>
-      <p class="text-gray-600">سعر: 119$</p>
-      <button class="mt-3 bg-blue-600 text-white px-4 py-2 rounded">أضف للسلة</button>
+  <!-- PRODUCT MODAL -->
+  <div id="productModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-50 p-4">
+    <div class="bg-white rounded-lg max-w-3xl w-full overflow-hidden">
+      <div class="p-4 flex justify-between items-start">
+        <div>
+          <h3 id="modalTitle" class="font-bold text-lg"></h3>
+          <div id="modalCat" class="text-sm text-gray-500"></div>
+        </div>
+        <div class="text-lg font-bold" id="modalPrice"></div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
+        <img id="modalImg" class="w-full h-64 object-cover rounded" src="" alt="">
+        <div>
+          <p id="modalDesc" class="text-gray-700"></p>
+          <div class="mt-4 flex gap-2">
+            <button id="modalAdd" class="px-4 py-2 bg-indigo-600 text-white rounded">أضف للسلة</button>
+            <button id="modalClose" class="px-4 py-2 border rounded">إغلاق</button>
+          </div>
+          <div id="modalStock" class="mt-3 text-sm text-gray-500"></div>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <div class="bg-white shadow rounded p-4">
-      <img src="https://via.placeholder.com/300x200" class="rounded" />
-      <h3 class="font-bold mt-3">بطاقة شاشة 8GB</h3>
-      <p class="text-gray-600">سعر: 399$</p>
-      <button class="mt-3 bg-blue-600 text-white px-4 py-2 rounded">أضف للسلة</button>
+  <!-- Footer -->
+  <footer class="mt-10 bg-gray-900 text-white py-4">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      © <span id="year"></span> متجر جوهان — جميع الحقوق محفوظة
     </div>
-  </section>
-
-  <footer class="bg-gray-800 text-white p-4 text-center">
-    © 2025 متجر جوهان — جميع الحقوق محفوظة
   </footer>
+
+  <!-- SCRIPTS: data + router + cart logic -->
+  <script>
+    // ========= SAMPLE DATA =========
+    const PRODUCTS = [
+      { id:1, title:"لوحة مفاتيح ميكانيكية", price:119.00, category:"Peripherals", rating:4.8, image:"https://via.placeholder.com/640x480?text=Keyboard", desc:"مفاتيح قابلة للتبديل، إضاءة RGB، تصميم مدمج.", stock:10 },
+      { id:2, title:"فأرة ألعاب RGB", price:49.00, category:"Peripherals", rating:4.6, image:"https://via.placeholder.com/640x480?text=Gaming+Mouse", desc:"دقة عالية وراحة في اليد.", stock:15 },
+      { id:3, title:"بطاقة شاشة 8GB", price:399.00, category:"Hardware", rating:4.5, image:"https://via.placeholder.com/640x480?text=GPU", desc:"أداء ممتاز للألعاب والرسوميات.", stock:5 },
+      { id:4, title:"NVMe SSD 1TB", price:79.99, category:"Storage", rating:4.7, image:"https://via.placeholder.com/640x480?text=SSD+1TB", desc:"سرعة تحميل وتشغيل فائقة.", stock:20 }
+    ];
+
+    // ========= UTIL & STATE =========
+    const $ = (sel) => document.querySelector(sel);
+    const $$ = (sel) => Array.from(document.querySelectorAll(sel));
+    let CART = JSON.parse(localStorage.getItem('ethech_cart')||'[]');
+
+    function saveCart(){ localStorage.setItem('ethech_cart', JSON.stringify(CART)); renderCart(); updateCartCount(); }
+    function updateCartCount(){ $('#cartCount').textContent = CART.reduce((s,i)=>s+i.qty,0); $('#cartTotal').textContent = CART.reduce((s,i)=>s+i.qty*i.price,0).toFixed(2) + ' $'; }
+    function renderCart(){
+      const wrap = $('#cartItems'); wrap.innerHTML = '';
+      if(CART.length===0){ wrap.innerHTML = '<div class="text-gray-500">السلة فارغة. أضف منتجات.</div>'; updateCartCount(); return; }
+      CART.forEach(it=>{
+        const div = document.createElement('div'); div.className='flex gap-3 items-center border-b py-3';
+        div.innerHTML = `
+          <img src="${it.image}" class="w-16 h-12 object-cover rounded" />
+          <div class="flex-1">
+            <div class="font-medium">${it.title}</div>
+            <div class="text-sm text-gray-500">${it.qty} × $${it.price.toFixed(2)}</div>
+          </div>
+          <div class="flex items-center gap-1">
+            <button data-id="${it.id}" class="px-2 py-1 border dec">-</button>
+            <div class="px-2">${it.qty}</div>
+            <button data-id="${it.id}" class="px-2 py-1 border inc">+</button>
+          </div>
+        `;
+        wrap.appendChild(div);
+      });
+      // attach inc/dec
+      $$('.inc').forEach(b=>b.onclick=()=>{ const id=+b.dataset.id; CART=CART.map(x=>x.id===id?{...x,qty:x.qty+1}:x); saveCart(); });
+      $$('.dec').forEach(b=>b.onclick=()=>{ const id=+b.dataset.id; CART=CART.map(x=>x.id===id?{...x,qty:Math.max(1,x.qty-1):x}).filter(Boolean); saveCart(); });
+      updateCartCount();
+    }
+
+    // ========= UI RENDER (SPA) =========
+    function homeView(){
+      const searchVal = $('#search')?.value?.toLowerCase()||'';
+      const products = PRODUCTS.filter(p => p.title.toLowerCase().includes(searchVal) || p.desc.toLowerCase().includes(searchVal));
+      return `
+        <section class="text-center mb-6">
+          <h1 class="text-3xl font-extrabold">أفضل معدات الحاسوب هنا 🔥</h1>
+          <p class="text-gray-600 mt-2">لوحات مفاتيح • فأرات • بطاقات شاشة • SSD</p>
+        </section>
+
+        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          ${products.map(p=>`
+            <article class="bg-white p-4 rounded card-shadow">
+              <img src="${p.image}" class="w-full h-40 object-cover rounded" alt="${p.title}">
+              <div class="mt-3 flex justify-between items-start gap-2">
+                <div>
+                  <h3 class="font-semibold">${p.title}</h3>
+                  <div class="text-sm text-gray-500">${p.category} · ⭐ ${p.rating}</div>
+                </div>
+                <div class="text-lg font-bold">$${p.price.toFixed(2)}</div>
+              </div>
+              <p class="text-sm text-gray-600 mt-2 line-clamp-3">${p.desc}</p>
+              <div class="mt-4 flex gap-2">
+                <button data-id="${p.id}" class="addItem flex-1 py-2 bg-indigo-600 text-white rounded">أضف للسلة</button>
+                <button data-id="${p.id}" class="viewItem py-2 px-3 border rounded">عرض</button>
+              </div>
+            </article>
+          `).join('')}
+        </section>
+      `;
+    }
+
+    function dealsView(){
+      // simple subset - those over $100 as "deals" (demo)
+      const list = PRODUCTS.filter(p => p.price>=100);
+      return `
+        <section>
+          <h2 class="text-2xl font-bold mb-4">عروض مميزة</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            ${list.map(p=>`
+              <div class="bg-white p-4 rounded card-shadow flex items-center gap-4">
+                <img src="${p.image}" class="w-28 h-20 object-cover rounded" />
+                <div class="flex-1">
+                  <div class="font-semibold">${p.title}</div>
+                  <div class="text-sm text-gray-500">$${p.price.toFixed(2)}</div>
+                </div>
+                <button data-id="${p.id}" class="addItem py-2 px-3 bg-indigo-600 text-white rounded">أضف</button>
+              </div>
+            `).join('')}
+          </div>
+        </section>
+      `;
+    }
+
+    function supportView(){
+      return `
+        <section class="max-w-2xl mx-auto bg-white p-6 rounded card-shadow">
+          <h2 class="text-xl font-bold mb-3">تواصل معنا</h2>
+          <p class="text-gray-600">عندك سؤال على المنتج؟ استفسر هنا و غادي نردّ عليك.</p>
+          <form id="contactForm" class="mt-4 space-y-3">
+            <input required name="name" placeholder="اسمك" class="w-full p-2 border rounded" />
+            <input required name="email" type="email" placeholder="بريدك" class="w-full p-2 border rounded" />
+            <textarea name="message" rows="4" placeholder="رسالتك" class="w-full p-2 border rounded"></textarea>
+            <button class="py-2 px-4 bg-indigo-600 text-white rounded">إرسال</button>
+          </form>
+        </section>
+      `;
+    }
+
+    // router render
+    function renderRoute(){
+      const hash = location.hash.replace('#','') || '/';
+      const target = $('#app');
+      if(hash==='/'||hash===''){
+        target.innerHTML = homeView();
+      } else if(hash.startsWith('/deals')){
+        target.innerHTML = dealsView();
+      } else if(hash.startsWith('/support')){
+        target.innerHTML = supportView();
+      } else {
+        target.innerHTML = '<div class="text-center p-8">الصفحة غير موجودة</div>';
+      }
+      attachUI();
+    }
+
+    // attach UI events after render
+    function attachUI(){
+      // add to cart
+      $$('.addItem').forEach(b=>b.onclick=()=>{
+        const id=+b.dataset.id; const p = PRODUCTS.find(x=>x.id===id);
+        const found=CART.find(x=>x.id===id);
+        if(found){ CART=CART.map(x=>x.id===id?{...x,qty:x.qty+1}:x); }
+        else CART.push({...p,qty:1});
+        saveCart();
+        openCart();
+      });
+
+      // view product
+      $$('.viewItem').forEach(b=>b.onclick=()=>{
+        const id=+b.dataset.id; openProductModal(id);
+      });
+
+      // contact form
+      const cf = $('#contactForm');
+      if(cf){ cf.onsubmit = (e)=>{ e.preventDefault(); alert('شكراً! سوف نرد عليك قريبا.'); cf.reset(); } }
+
+      // search realtime
+      const s = $('#search'); if(s){ s.oninput = () => renderRoute(); }
+    }
+
+    // ========= MODAL =========
+    function openProductModal(id){
+      const p = PRODUCTS.find(x=>x.id===id);
+      $('#modalTitle').textContent = p.title;
+      $('#modalCat').textContent = p.category + ' · ⭐ ' + p.rating;
+      $('#modalPrice').textContent = '$' + p.price.toFixed(2);
+      $('#modalImg').src = p.image;
+      $('#modalDesc').textContent = p.desc;
+      $('#modalStock').textContent = 'الكمية المتاحة: ' + p.stock;
+      $('#productModal').classList.remove('hidden');
+      $('#productModal').classList.add('flex');
+      $('#modalAdd').onclick = ()=>{ const found=CART.find(x=>x.id===id); if(found) CART=CART.map(x=>x.id===id?{...x,qty:x.qty+1}:x); else CART.push({...p,qty:1}); saveCart(); $('#productModal').classList.add('hidden'); $('#productModal').classList.remove('flex'); openCart(); };
+      $('#modalClose').onclick = ()=>{ $('#productModal').classList.add('hidden'); $('#productModal').classList.remove('flex'); };
+    }
+
+    // ========= CART CONTROLS =========
+    function openCart(){ $('#cartDrawer').classList.remove('-translate-x-full'); $('#cartDrawer').classList.add('translate-x-0'); renderCart(); }
+    function closeCart(){ $('#cartDrawer').classList.remove('translate-x-0'); $('#cartDrawer').classList.add('-translate-x-full'); }
+
+    // buttons
+    document.addEventListener('click', (e)=>{
+      if(e.target.matches('#cartBtn') || e.target.closest('#cartBtn')) openCart();
+      if(e.target.matches('#closeCart')) closeCart();
+      if(e.target.matches('#clearCartBtn')){ CART=[]; saveCart(); }
+      if(e.target.matches('#checkoutBtn')){ alert('هذه مثال للديمو — اربط بوابة دفع حقيقية لاحقاً'); }
+    });
+
+    // ========= INIT =========
+    window.addEventListener('hashchange', renderRoute);
+    window.addEventListener('load', () => {
+      // render year
+      document.getElementById('year').textContent = new Date().getFullYear();
+      renderRoute();
+      renderCart();
+      updateCartCount();
+      // set visit button
+      const visit = document.querySelectorAll('a[href="#/"]'); visit.forEach(a => a.onclick = ()=>location.hash = '/');
+    });
+
+    // small UI helpers
+    $('#menuBtn').onclick = ()=>{ alert('Menu — استخدم الروابط أو الزرار في الأعلى'); };
+  </script>
 </body>
 </html>
