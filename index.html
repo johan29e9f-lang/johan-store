@@ -1,303 +1,329 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>متجر جوهان — E-Tech</title>
-  <meta name="description" content="أفضل معدات الحاسوب — لوحات مفاتيح، فأرات، بطاقات شاشة، SSD" />
-  <!-- Tailwind CDN (مناسب للبدء) -->
+  <meta name="description" content="أفضل معدات الحاسوب — لوحات مفاتيح، فأرات، بطاقات شاشة وملحقات." />
+  <!-- Tailwind CDN -->
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <style>
-    /* بعض اللمسات الخاصة */
-    .card-shadow { box-shadow: 0 6px 18px rgba(15,23,42,0.08); }
-    .blur-bg { backdrop-filter: blur(6px); }
-    /* زر صغير تحسين اللمس في الموبايل */
-    button:active { transform: translateY(1px); }
+    /* small helpers */
+    .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+    .card-shadow { box-shadow: 0 8px 24px rgba(9,30,66,0.06); }
+    /* brand colors: primary = teal, accent = orange */
+    :root{
+      --primary: #0d9488; /* teal-600 */
+      --primary-600: #0f766e;
+      --accent: #f97316;  /* orange-500 */
+      --muted: #6b7280;
+    }
+    .btn-primary { background: linear-gradient(90deg,var(--primary),var(--primary-600)); color:white; }
+    .btn-accent { background: var(--accent); color:white; }
+    .text-muted { color: var(--muted); }
+    /* small responsive fix for product images */
+    .img-cover { width:100%; height:100%; object-fit:cover; display:block; }
+    /* drawer transition */
+    .drawer-hidden { transform: translateX(100%); }
+    .drawer-visible { transform: translateX(0); }
   </style>
 </head>
-<body class="bg-gray-50 text-gray-800">
+<body class="bg-gray-50 text-gray-800 antialiased font-sans">
 
-  <!-- NAV -->
-  <header class="bg-white shadow sticky top-0 z-40">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16">
-        <a href="#/" class="text-xl font-extrabold text-indigo-600">متجر جوهان</a>
-        <nav class="hidden md:flex items-center gap-6 text-sm">
-          <a href="#/" class="hover:text-indigo-600">الرئيسية</a>
-          <a href="#/deals" class="hover:text-indigo-600">العروض</a>
-          <a href="#/support" class="hover:text-indigo-600">الدعم</a>
+  <!-- Header -->
+  <header class="sticky top-0 z-40" style="background:linear-gradient(90deg,#ecfdf5,white);">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-4">
+        <div class="text-2xl font-extrabold" style="color:var(--primary)">متجر جوهان</div>
+        <nav class="hidden sm:flex gap-4 text-sm text-muted">
+          <a href="#/" class="hover:text-gray-900">الرئيسية</a>
+          <a href="#/deals" class="hover:text-gray-900">العروض</a>
+          <a href="#/support" class="hover:text-gray-900">الدعم</a>
         </nav>
+      </div>
 
-        <div class="flex items-center gap-3">
-          <div class="hidden sm:flex items-center bg-gray-100 rounded p-1 px-2">
-            <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-            <input id="search" placeholder="ابحث عن منتج أو علامة" class="bg-transparent outline-none text-sm px-2" />
-          </div>
-
-          <button id="cartBtn" class="relative inline-flex items-center px-3 py-2 rounded-md hover:bg-gray-100">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 7h12l-2-7"/></svg>
-            <span id="cartCount" class="absolute -top-1 -right-1 bg-indigo-600 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">0</span>
-          </button>
-          <button id="menuBtn" class="md:hidden px-2 py-2">☰</button>
+      <div class="flex items-center gap-3">
+        <div class="hidden sm:flex items-center gap-2 bg-white border rounded px-3 py-1 shadow-sm">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <input id="search" placeholder="ابحث عن منتج أو ماركة" class="bg-transparent outline-none text-sm w-44" />
         </div>
+
+        <button id="cartBtn" class="relative inline-flex items-center gap-2 px-3 py-2 rounded hover:shadow">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 7h12l-2-7M9 21a1 1 0 100-2 1 1 0 000 2zm6 0a1 1 0 100-2 1 1 0 000 2z"/>
+          </svg>
+          <span class="hidden sm:inline text-sm">سلة</span>
+          <span id="cartCount" class="absolute -right-1 -top-1 bg-[var(--primary)] text-white rounded-full text-xs w-5 h-5 flex items-center justify-center">0</span>
+        </button>
       </div>
     </div>
   </header>
 
-  <!-- MAIN -->
-  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <!-- Router target -->
+  <!-- Main -->
+  <main class="max-w-6xl mx-auto px-4 py-8">
     <div id="app"></div>
   </main>
 
-  <!-- CART Drawer -->
-  <div id="cartDrawer" class="fixed inset-y-0 left-0 w-full sm:w-96 transform -translate-x-full transition-transform z-50">
-    <div class="h-full bg-white shadow-xl flex flex-col">
+  <!-- Footer -->
+  <footer class="mt-12 border-t py-6 text-center text-sm text-muted">
+    © <span id="year"></span> متجر جوهان — جميع الحقوق محفوظة.
+  </footer>
+
+  <!-- Cart Drawer -->
+  <div id="cartDrawer" class="fixed top-0 left-0 h-full w-full sm:w-96 z-50 transition-transform duration-300 drawer-hidden bg-white shadow-lg">
+    <div class="h-full flex flex-col">
       <div class="p-4 border-b flex justify-between items-center">
         <h3 class="font-semibold">سلة التسوق</h3>
         <div class="flex gap-2">
           <button id="clearCartBtn" class="text-red-500 text-sm">مسح</button>
-          <button id="closeCart" class="text-sm">إغلاق</button>
+          <button id="closeCart" class="text-sm text-gray-600">إغلاق</button>
         </div>
       </div>
       <div id="cartItems" class="p-4 flex-1 overflow-auto"></div>
       <div class="p-4 border-t">
         <div class="flex justify-between items-center">
-          <div class="text-sm text-gray-600">المجموع</div>
-          <div id="cartTotal" class="font-semibold">0.00 $</div>
+          <div class="text-sm text-muted">المجموع</div>
+          <div id="cartTotal" class="font-semibold">$0.00</div>
         </div>
         <div class="mt-4">
-          <button id="checkoutBtn" class="w-full py-3 bg-indigo-600 text-white rounded">المتابعة للدفع</button>
-          <button id="payMethod" class="w-full mt-2 py-2 border rounded">طرق الدفع</button>
+          <button id="checkoutBtn" class="w-full py-3 rounded btn-primary">اشتر الآن</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- PRODUCT MODAL -->
-  <div id="productModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-50 p-4">
-    <div class="bg-white rounded-lg max-w-3xl w-full overflow-hidden">
+  <!-- Product Modal -->
+  <div id="productModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 p-4">
+    <div class="bg-white rounded-2xl max-w-3xl w-full overflow-hidden">
       <div class="p-4 flex justify-between items-start">
         <div>
-          <h3 id="modalTitle" class="font-bold text-lg"></h3>
-          <div id="modalCat" class="text-sm text-gray-500"></div>
+          <h3 id="modalTitle" class="font-bold text-lg">عنوان</h3>
+          <p id="modalCat" class="text-sm text-muted">فئة</p>
         </div>
-        <div class="text-lg font-bold" id="modalPrice"></div>
+        <div id="modalPrice" class="text-lg font-bold text-[var(--primary)]">$0.00</div>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
-        <img id="modalImg" class="w-full h-64 object-cover rounded" src="" alt="">
+        <div class="h-64 bg-gray-100 rounded overflow-hidden"><img id="modalImg" src="" alt="" class="img-cover h-full w-full" /></div>
         <div>
           <p id="modalDesc" class="text-gray-700"></p>
           <div class="mt-4 flex gap-2">
-            <button id="modalAdd" class="px-4 py-2 bg-indigo-600 text-white rounded">أضف للسلة</button>
-            <button id="modalClose" class="px-4 py-2 border rounded">إغلاق</button>
+            <button id="modalAdd" class="px-4 py-2 rounded btn-primary">أضف إلى السلة</button>
+            <button id="modalClose" class="px-4 py-2 rounded border">إغلاق</button>
           </div>
-          <div id="modalStock" class="mt-3 text-sm text-gray-500"></div>
+          <div id="modalStock" class="mt-4 text-sm text-muted"></div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Footer -->
-  <footer class="mt-10 bg-gray-900 text-white py-4">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-      © <span id="year"></span> متجر جوهان — جميع الحقوق محفوظة
-    </div>
-  </footer>
-
-  <!-- SCRIPTS: data + router + cart logic -->
+  <!-- Script (single-file app) -->
   <script>
-    // ========= SAMPLE DATA =========
-    const PRODUCTS = [
-      { id:1, title:"لوحة مفاتيح ميكانيكية", price:119.00, category:"Peripherals", rating:4.8, image:"https://via.placeholder.com/640x480?text=Keyboard", desc:"مفاتيح قابلة للتبديل، إضاءة RGB، تصميم مدمج.", stock:10 },
-      { id:2, title:"فأرة ألعاب RGB", price:49.00, category:"Peripherals", rating:4.6, image:"https://via.placeholder.com/640x480?text=Gaming+Mouse", desc:"دقة عالية وراحة في اليد.", stock:15 },
-      { id:3, title:"بطاقة شاشة 8GB", price:399.00, category:"Hardware", rating:4.5, image:"https://via.placeholder.com/640x480?text=GPU", desc:"أداء ممتاز للألعاب والرسوميات.", stock:5 },
-      { id:4, title:"NVMe SSD 1TB", price:79.99, category:"Storage", rating:4.7, image:"https://via.placeholder.com/640x480?text=SSD+1TB", desc:"سرعة تحميل وتشغيل فائقة.", stock:20 }
-    ];
+  /* ========= بيانات المنتجات ========= */
+  const PRODUCTS = [
+    { id:1, title:"لوحة مفاتيح ميكانيكية", price:119.00, category:"Peripherals", rating:4.8, image:"https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=900&auto=format&fit=crop", desc:"لوحة مفاتيح ميكانيكية بمفاتيح متينة وRGB.", stock:12},
+    { id:2, title:"فأرة ألعاب RGB", price:49.00, category:"Peripherals", rating:4.6, image:"https://images.unsplash.com/photo-1619536077119-9b6b8e4e7d3e?q=80&w=900&auto=format&fit=crop", desc:"فأرة بدقة عالية وقابلة للبرمجة.", stock:20},
+    { id:3, title:"بطاقة شاشة 8GB", price:399.00, category:"Hardware", rating:4.5, image:"https://images.unsplash.com/photo-1611905764475-1c7b2f7fa3d0?q=80&w=900&auto=format&fit=crop", desc:"أداء قوي مع دعم تتبع الأشعة.", stock:6},
+    { id:4, title:"NVMe SSD 1TB", price:79.99, category:"Storage", rating:4.7, image:"https://images.unsplash.com/photo-1589571894960-20bbe2828d9b?q=80&w=900&auto=format&fit=crop", desc:"تخزين سريع للتحميل ونظام التشغيل.", stock:15}
+  ];
 
-    // ========= UTIL & STATE =========
-    const $ = (sel) => document.querySelector(sel);
-    const $$ = (sel) => Array.from(document.querySelectorAll(sel));
-    let CART = JSON.parse(localStorage.getItem('ethech_cart')||'[]');
+  /* ===== اختصارات ===== */
+  const $ = sel => document.querySelector(sel);
+  const $$ = sel => Array.from(document.querySelectorAll(sel));
 
-    function saveCart(){ localStorage.setItem('ethech_cart', JSON.stringify(CART)); renderCart(); updateCartCount(); }
-    function updateCartCount(){ $('#cartCount').textContent = CART.reduce((s,i)=>s+i.qty,0); $('#cartTotal').textContent = CART.reduce((s,i)=>s+i.qty*i.price,0).toFixed(2) + ' $'; }
-    function renderCart(){
-      const wrap = $('#cartItems'); wrap.innerHTML = '';
-      if(CART.length===0){ wrap.innerHTML = '<div class="text-gray-500">السلة فارغة. أضف منتجات.</div>'; updateCartCount(); return; }
-      CART.forEach(it=>{
-        const div = document.createElement('div'); div.className='flex gap-3 items-center border-b py-3';
-        div.innerHTML = `
-          <img src="${it.image}" class="w-16 h-12 object-cover rounded" />
-          <div class="flex-1">
-            <div class="font-medium">${it.title}</div>
-            <div class="text-sm text-gray-500">${it.qty} × $${it.price.toFixed(2)}</div>
-          </div>
-          <div class="flex items-center gap-1">
-            <button data-id="${it.id}" class="px-2 py-1 border dec">-</button>
-            <div class="px-2">${it.qty}</div>
-            <button data-id="${it.id}" class="px-2 py-1 border inc">+</button>
-          </div>
-        `;
-        wrap.appendChild(div);
-      });
-      // attach inc/dec
-      $$('.inc').forEach(b=>b.onclick=()=>{ const id=+b.dataset.id; CART=CART.map(x=>x.id===id?{...x,qty:x.qty+1}:x); saveCart(); });
-      $$('.dec').forEach(b=>b.onclick=()=>{ const id=+b.dataset.id; CART=CART.map(x=>x.id===id?{...x,qty:Math.max(1,x.qty-1):x}).filter(Boolean); saveCart(); });
-      updateCartCount();
+  /* ===== حالة السلة ===== */
+  let CART = JSON.parse(localStorage.getItem('etech_cart') || '[]');
+
+  function saveCart(){ localStorage.setItem('etech_cart', JSON.stringify(CART)); updateCartCount(); }
+  function updateCartCount(){
+    const count = CART.reduce((s,i)=>s+i.qty,0);
+    const el = $('#cartCount');
+    if(el) el.textContent = count;
+  }
+
+  function renderCart(){
+    const wrap = $('#cartItems');
+    if(!wrap) return;
+    if(CART.length === 0){
+      wrap.innerHTML = '<div class="text-muted p-4">السلة فارغة. أضف منتجات من القائمة.</div>';
+      $('#cartTotal').textContent = '$0.00';
+      return;
     }
+    wrap.innerHTML = CART.map(it => `
+      <div class="flex gap-3 items-center border-b py-3">
+        <img src="${it.image}" class="w-16 h-12 object-cover rounded" />
+        <div class="flex-1">
+          <div class="font-medium">${it.title}</div>
+          <div class="text-sm text-muted">$${(it.price*it.qty).toFixed(2)} · ${it.qty} × $${it.price.toFixed(2)}</div>
+        </div>
+        <div class="flex items-center gap-1">
+          <button data-id="${it.id}" class="decBtn px-2 py-1 rounded border">-</button>
+          <div class="px-2">${it.qty}</div>
+          <button data-id="${it.id}" class="incBtn px-2 py-1 rounded border">+</button>
+        </div>
+      </div>
+    `).join('');
+    const total = CART.reduce((s,i)=>s + i.price*i.qty,0);
+    $('#cartTotal').textContent = '$' + total.toFixed(2);
 
-    // ========= UI RENDER (SPA) =========
-    function homeView(){
-      const searchVal = $('#search')?.value?.toLowerCase()||'';
-      const products = PRODUCTS.filter(p => p.title.toLowerCase().includes(searchVal) || p.desc.toLowerCase().includes(searchVal));
-      return `
-        <section class="text-center mb-6">
-          <h1 class="text-3xl font-extrabold">أفضل معدات الحاسوب هنا 🔥</h1>
-          <p class="text-gray-600 mt-2">لوحات مفاتيح • فأرات • بطاقات شاشة • SSD</p>
-        </section>
+    $$('.incBtn').forEach(b => b.onclick = ()=> changeQty(+b.dataset.id, +1));
+    $$('.decBtn').forEach(b => b.onclick = ()=> changeQty(+b.dataset.id, -1));
+  }
 
-        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          ${products.map(p=>`
-            <article class="bg-white p-4 rounded card-shadow">
-              <img src="${p.image}" class="w-full h-40 object-cover rounded" alt="${p.title}">
-              <div class="mt-3 flex justify-between items-start gap-2">
-                <div>
-                  <h3 class="font-semibold">${p.title}</h3>
-                  <div class="text-sm text-gray-500">${p.category} · ⭐ ${p.rating}</div>
-                </div>
-                <div class="text-lg font-bold">$${p.price.toFixed(2)}</div>
-              </div>
-              <p class="text-sm text-gray-600 mt-2 line-clamp-3">${p.desc}</p>
+  function changeQty(id, delta){
+    CART = CART.map(x => x.id===id ? {...x, qty: Math.max(1, x.qty + delta)} : x);
+    CART = CART.filter(x => x.qty > 0);
+    saveCart();
+    renderCart();
+  }
+
+  function addToCart(productId){
+    const p = PRODUCTS.find(x=>x.id===productId);
+    if(!p) return;
+    const found = CART.find(x=>x.id===productId);
+    if(found) found.qty += 1; else CART.push({...p, qty:1});
+    saveCart();
+    renderCart();
+    openCart();
+  }
+
+  function openCart(){ const d = $('#cartDrawer'); if(d){ d.classList.remove('drawer-hidden'); d.classList.add('drawer-visible'); } }
+  function closeCart(){ const d = $('#cartDrawer'); if(d){ d.classList.add('drawer-hidden'); d.classList.remove('drawer-visible'); } }
+
+  /* ===== Modal ===== */
+  function openProductModal(id){
+    const p = PRODUCTS.find(x=>x.id===id); if(!p) return;
+    $('#modalTitle').textContent = p.title;
+    $('#modalCat').textContent = p.category + ' · ⭐ ' + p.rating;
+    $('#modalPrice').textContent = '$' + Number(p.price).toFixed(2);
+    $('#modalImg').src = p.image;
+    $('#modalDesc').textContent = p.desc || '';
+    $('#modalStock').textContent = 'الكمية المتاحة: ' + (p.stock || 0);
+    $('#productModal').classList.remove('hidden');
+  }
+  function closeProductModal(){ $('#productModal').classList.add('hidden'); }
+
+  /* ===== Views (router) ===== */
+  function homeView(){
+    const s = $('#search');
+    const searchVal = s && s.value ? s.value.toLowerCase() : '';
+    const list = PRODUCTS.filter(p => {
+      if(!searchVal) return true;
+      return (p.title + ' ' + p.desc + ' ' + (p.category||'')).toLowerCase().includes(searchVal);
+    });
+
+    return `
+      <section class="text-center mb-6">
+        <h1 class="text-3xl font-extrabold" style="color:var(--primary)">أفضل معدات الحاسوب هنا 🔥</h1>
+        <p class="text-sm text-muted mt-2">لوحات مفاتيح · فأرات · بطاقات شاشة · SSD</p>
+      </section>
+
+      <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        ${list.map(p => `
+          <article class="bg-white p-4 rounded-lg card-shadow">
+            <div class="h-44 bg-gray-100 overflow-hidden rounded">
+              <img src="${p.image}" alt="${p.title}" class="img-cover h-full w-full" />
+            </div>
+            <div class="mt-3">
+              <h3 class="font-semibold">${p.title}</h3>
+              <div class="text-sm text-muted">${p.category} · ⭐ ${p.rating}</div>
+              <div class="text-lg font-bold mt-2 text-[var(--primary)]">$${Number(p.price).toFixed(2)}</div>
+              <p class="text-sm text-gray-600 mt-2 line-clamp-3">${p.desc || ''}</p>
+
               <div class="mt-4 flex gap-2">
-                <button data-id="${p.id}" class="addItem flex-1 py-2 bg-indigo-600 text-white rounded">أضف للسلة</button>
-                <button data-id="${p.id}" class="viewItem py-2 px-3 border rounded">عرض</button>
+                <button data-id="${p.id}" class="addItemBtn flex-1 py-2 rounded btn-primary">أضف إلى السلة</button>
+                <button data-id="${p.id}" class="viewItemBtn px-3 py-2 rounded border">عرض</button>
               </div>
-            </article>
-          `).join('')}
-        </section>
-      `;
-    }
+            </div>
+          </article>
+        `).join('')}
+      </section>
+    `;
+  }
 
-    function dealsView(){
-      // simple subset - those over $100 as "deals" (demo)
-      const list = PRODUCTS.filter(p => p.price>=100);
-      return `
-        <section>
-          <h2 class="text-2xl font-bold mb-4">عروض مميزة</h2>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            ${list.map(p=>`
-              <div class="bg-white p-4 rounded card-shadow flex items-center gap-4">
-                <img src="${p.image}" class="w-28 h-20 object-cover rounded" />
-                <div class="flex-1">
-                  <div class="font-semibold">${p.title}</div>
-                  <div class="text-sm text-gray-500">$${p.price.toFixed(2)}</div>
+  function dealsView(){
+    const list = PRODUCTS.filter(p => p.price < 150);
+    return `
+      <section>
+        <h2 class="text-2xl font-bold mb-4" style="color:var(--primary)">عروض مميزة</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          ${list.map(p => `
+            <div class="bg-white p-4 rounded card-shadow flex items-center gap-4">
+              <img src="${p.image}" class="w-28 h-20 object-cover rounded" />
+              <div class="flex-1">
+                <div class="font-medium">${p.title}</div>
+                <div class="text-sm text-muted">$${p.price.toFixed(2)}</div>
+                <div class="mt-2">
+                  <button data-id="${p.id}" class="addItemBtn px-3 py-2 rounded btn-primary">أضف للسلة</button>
                 </div>
-                <button data-id="${p.id}" class="addItem py-2 px-3 bg-indigo-600 text-white rounded">أضف</button>
               </div>
-            `).join('')}
-          </div>
-        </section>
-      `;
-    }
+            </div>
+          `).join('')}
+        </div>
+      </section>
+    `;
+  }
 
-    function supportView(){
-      return `
-        <section class="max-w-2xl mx-auto bg-white p-6 rounded card-shadow">
-          <h2 class="text-xl font-bold mb-3">تواصل معنا</h2>
-          <p class="text-gray-600">عندك سؤال على المنتج؟ استفسر هنا و غادي نردّ عليك.</p>
-          <form id="contactForm" class="mt-4 space-y-3">
-            <input required name="name" placeholder="اسمك" class="w-full p-2 border rounded" />
-            <input required name="email" type="email" placeholder="بريدك" class="w-full p-2 border rounded" />
-            <textarea name="message" rows="4" placeholder="رسالتك" class="w-full p-2 border rounded"></textarea>
-            <button class="py-2 px-4 bg-indigo-600 text-white rounded">إرسال</button>
-          </form>
-        </section>
-      `;
-    }
+  function supportView(){
+    return `
+      <section class="max-w-2xl mx-auto bg-white p-6 rounded card-shadow">
+        <h2 class="text-xl font-bold mb-3" style="color:var(--primary)">تواصل معنا</h2>
+        <p class="text-sm text-muted mb-4">أخبرنا بطلبك وسنعاود الاتصال بك.</p>
+        <form id="contactForm" class="space-y-3">
+          <input name="name" placeholder="الإسم" class="w-full p-2 border rounded" required />
+          <input name="email" placeholder="البريد الإلكتروني" class="w-full p-2 border rounded" required />
+          <textarea name="message" rows="4" placeholder="رسالتك" class="w-full p-2 border rounded" required></textarea>
+          <button class="px-4 py-2 rounded btn-primary">إرسال</button>
+        </form>
+      </section>
+    `;
+  }
 
-    // router render
-    function renderRoute(){
-      const hash = location.hash.replace('#','') || '/';
-      const target = $('#app');
-      if(hash==='/'||hash===''){
-        target.innerHTML = homeView();
-      } else if(hash.startsWith('/deals')){
-        target.innerHTML = dealsView();
-      } else if(hash.startsWith('/support')){
-        target.innerHTML = supportView();
-      } else {
-        target.innerHTML = '<div class="text-center p-8">الصفحة غير موجودة</div>';
-      }
-      attachUI();
-    }
+  function renderRoute(){
+    const hash = location.hash.replace('#','') || '/';
+    const target = $('#app');
+    if(!target) return;
+    if(hash === '/deals') target.innerHTML = dealsView();
+    else if(hash === '/support') target.innerHTML = supportView();
+    else target.innerHTML = homeView();
+    attachUI();
+  }
 
-    // attach UI events after render
-    function attachUI(){
-      // add to cart
-      $$('.addItem').forEach(b=>b.onclick=()=>{
-        const id=+b.dataset.id; const p = PRODUCTS.find(x=>x.id===id);
-        const found=CART.find(x=>x.id===id);
-        if(found){ CART=CART.map(x=>x.id===id?{...x,qty:x.qty+1}:x); }
-        else CART.push({...p,qty:1});
-        saveCart();
-        openCart();
-      });
+  function attachUI(){
+    $$('.addItemBtn').forEach(b => b.onclick = ()=> addToCart(+b.dataset.id));
+    $$('.viewItemBtn').forEach(b => b.onclick = ()=> openProductModal(+b.dataset.id));
+    const s = $('#search'); if(s) s.oninput = () => renderRoute();
+  }
 
-      // view product
-      $$('.viewItem').forEach(b=>b.onclick=()=>{
-        const id=+b.dataset.id; openProductModal(id);
-      });
+  /* ===== events & init ===== */
+  window.addEventListener('hashchange', renderRoute);
+  window.addEventListener('load', () => {
+    $('#year').textContent = new Date().getFullYear();
+    renderRoute();
+    renderCart();
+    updateCartCount();
 
-      // contact form
-      const cf = $('#contactForm');
-      if(cf){ cf.onsubmit = (e)=>{ e.preventDefault(); alert('شكراً! سوف نرد عليك قريبا.'); cf.reset(); } }
+    // cart controls
+    $('#cartBtn').onclick = openCart;
+    $('#closeCart').onclick = closeCart;
+    $('#clearCartBtn').onclick = ()=> { CART = []; saveCart(); renderCart(); };
 
-      // search realtime
-      const s = $('#search'); if(s){ s.oninput = () => renderRoute(); }
-    }
+    // modal controls
+    $('#modalClose').onclick = closeProductModal;
+    $('#productModal').onclick = (e)=> { if(e.target.id === 'productModal') closeProductModal(); };
+    $('#modalAdd').onclick = ()=> {
+      const title = $('#modalTitle').textContent;
+      const p = PRODUCTS.find(x=>x.title === title);
+      if(p) addToCart(p.id);
+      closeProductModal();
+    };
 
-    // ========= MODAL =========
-    function openProductModal(id){
-      const p = PRODUCTS.find(x=>x.id===id);
-      $('#modalTitle').textContent = p.title;
-      $('#modalCat').textContent = p.category + ' · ⭐ ' + p.rating;
-      $('#modalPrice').textContent = '$' + p.price.toFixed(2);
-      $('#modalImg').src = p.image;
-      $('#modalDesc').textContent = p.desc;
-      $('#modalStock').textContent = 'الكمية المتاحة: ' + p.stock;
-      $('#productModal').classList.remove('hidden');
-      $('#productModal').classList.add('flex');
-      $('#modalAdd').onclick = ()=>{ const found=CART.find(x=>x.id===id); if(found) CART=CART.map(x=>x.id===id?{...x,qty:x.qty+1}:x); else CART.push({...p,qty:1}); saveCart(); $('#productModal').classList.add('hidden'); $('#productModal').classList.remove('flex'); openCart(); };
-      $('#modalClose').onclick = ()=>{ $('#productModal').classList.add('hidden'); $('#productModal').classList.remove('flex'); };
-    }
+    // checkout demo
+    $('#checkoutBtn').onclick = () => alert('ميزة الدفع غير مفعلة الآن — ستربط لاحقاً.');
 
-    // ========= CART CONTROLS =========
-    function openCart(){ $('#cartDrawer').classList.remove('-translate-x-full'); $('#cartDrawer').classList.add('translate-x-0'); renderCart(); }
-    function closeCart(){ $('#cartDrawer').classList.remove('translate-x-0'); $('#cartDrawer').classList.add('-translate-x-full'); }
-
-    // buttons
-    document.addEventListener('click', (e)=>{
-      if(e.target.matches('#cartBtn') || e.target.closest('#cartBtn')) openCart();
-      if(e.target.matches('#closeCart')) closeCart();
-      if(e.target.matches('#clearCartBtn')){ CART=[]; saveCart(); }
-      if(e.target.matches('#checkoutBtn')){ alert('هذه مثال للديمو — اربط بوابة دفع حقيقية لاحقاً'); }
-    });
-
-    // ========= INIT =========
-    window.addEventListener('hashchange', renderRoute);
-    window.addEventListener('load', () => {
-      // render year
-      document.getElementById('year').textContent = new Date().getFullYear();
-      renderRoute();
-      renderCart();
-      updateCartCount();
-      // set visit button
-      const visit = document.querySelectorAll('a[href="#/"]'); visit.forEach(a => a.onclick = ()=>location.hash = '/');
-    });
-
-    // small UI helpers
-    $('#menuBtn').onclick = ()=>{ alert('Menu — استخدم الروابط أو الزرار في الأعلى'); };
+  });
   </script>
+
 </body>
 </html>
