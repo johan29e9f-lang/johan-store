@@ -1,271 +1,345 @@
-<!doctype html>
-<html lang="ar" dir="rtl">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="UTF-8" />
+  <title>PC-X Store</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>PC-X — متجر المكونات</title>
+
   <style>
-    :root{
-      --bg: #ffffff;
-      --dark: #2A2F42;
-      --accent: #007BFF;
-      --card-radius: 12px;
-      --gap: 20px;
-      --box-shadow: 0 6px 18px rgba(42,47,66,0.08);
-      --glass: rgba(42,47,66,0.06);
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, "Noto Naskh Arabic", sans-serif;
-      background:var(--bg);
-      color:var(--dark);
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-      padding:24px;
+    :root {
+      --page-bg: #e5e7eb;         /* خلفية خارجية فاتحة */
+      --card-bg: #111827;         /* خلفية الكارت الغامقة */
+      --nav-bg: #111827;
+      --primary-text: #f9fafb;    /* نص أبيض تقريبًا */
+      --muted-text: #9ca3af;      /* رمادي فاتح */
+      --price-color: #1d9bff;     /* أزرق السعر */
+      --btn-bg: #007bff;          /* زر أزرق */
+      --btn-text: #ffffff;
+      --main-surface: #f9fafb;    /* خلفية اللوحة البيضاء */
     }
 
-    /* Header */
-    .header{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:16px;
-      padding:18px 22px;
-      border-radius:14px;
-      background:linear-gradient(180deg, rgba(42,47,66,0.98), rgba(42,47,66,0.98));
-      color:#fff;
-      box-shadow: var(--box-shadow);
-    }
-    .brand{display:flex;align-items:center;gap:12px}
-    .logo{
-      width:64px;height:40px;
-      display:flex;align-items:center;justify-content:center;
-      font-weight:700;font-size:20px;
-      border-radius:8px;background:transparent;color:var(--bg);
-      letter-spacing:1px
-    }
-    .brand h1{margin:0;font-size:18px}
-    .header-controls{display:flex;align-items:center;gap:16px}
-    .cart{
-      position:relative;
-      display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,0.06);
-    }
-    .cart svg{width:22px;height:22px;fill:#fff;opacity:0.95}
-    .count-badge{
-      min-width:26px;height:26px;border-radius:999px;background:var(--accent);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;
-      box-shadow:0 4px 10px rgba(0,123,255,0.18);
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
-    /* Main */
-    main{margin-top:22px}
-    .intro{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
-    .intro h2{margin:0;color:var(--dark)}
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(3, 1fr);
-      gap:var(--gap);
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+      background: var(--page-bg);
+      color: #111827;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
     }
 
-    .card{
-      background:linear-gradient(180deg, rgba(42,47,66,0.04), rgba(42,47,66,0.02));
-      border-radius:var(--card-radius);
-      overflow:hidden;
-      box-shadow:var(--box-shadow);
-      display:flex;flex-direction:column;justify-content:space-between;
+    .page-shell {
+      width: 100%;
+      max-width: 1200px;
+      background: var(--main-surface);
+      border-radius: 18px;
+      box-shadow:
+        0 22px 45px rgba(0, 0, 0, 0.18),
+        0 2px 4px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
     }
-    .media{
-      height:180px;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#1f2433 0%, #111214 60%);
-    }
-    .media img{width:85%;height:auto;max-height:160px;object-fit:contain;filter:drop-shadow(0 6px 20px rgba(0,0,0,0.6))}
 
-    .card-body{padding:16px 18px}
-    .title{font-size:16px;font-weight:600;margin:0 0 10px;color:var(--dark)}
-    .price{color:var(--accent);font-weight:700;margin-bottom:12px}
-    .actions{display:flex;align-items:center;gap:10px}
-    .btn{
-      padding:10px 14px;border-radius:8px;border:0;cursor:pointer;font-weight:700;
-      background:var(--accent);color:#fff;box-shadow:0 6px 14px rgba(0,123,255,0.12);
+    /* ====== NAVBAR ====== */
+    .nav {
+      background: var(--nav-bg);
+      color: var(--primary-text);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
-    .btn.ghost{background:transparent;color:var(--dark);border:1px solid rgba(42,47,66,0.06)}
 
-    /* Footer small */
-    footer{margin-top:32px;text-align:center;color:rgba(42,47,66,0.45);font-size:14px}
-
-    /* Responsive */
-    @media (max-width:1000px){
-      .grid{grid-template-columns:repeat(2,1fr)}
-      .media{height:160px}
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
-    @media (max-width:600px){
-      body{padding:14px}
-      .header{padding:12px}
-      .brand h1{font-size:16px}
-      .grid{grid-template-columns:1fr}
-      .media{height:220px}
+
+    .logo-box {
+      background: #111827;
+      border-radius: 6px;
+      padding: 10px 18px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      font-size: 20px;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      font-size: 13px;
+      color: var(--muted-text);
+    }
+
+    .tag-pill {
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid #4b5563;
+    }
+
+    .cart-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .cart-icon {
+      font-size: 18px;
+    }
+
+    .cart-count {
+      min-width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      background: #111827;
+      border: 1px solid #4b5563;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      color: var(--primary-text);
+    }
+
+    /* ====== CONTENT ====== */
+    .content {
+      padding: 24px 32px 32px;
+    }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 24px;
+    }
+
+    @media (max-width: 900px) {
+      .products-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 12px;
+      }
+      .content {
+        padding: 16px;
+      }
+      .products-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    /* ====== PRODUCT CARD ====== */
+    .product-card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      transition: transform 0.18s ease, box-shadow 0.18s ease,
+        translate 0.18s ease;
+      box-shadow: 0 14px 25px rgba(0, 0, 0, 0.45);
+    }
+
+    .product-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 22px 40px rgba(0, 0, 0, 0.55);
+    }
+
+    .product-image-wrapper {
+      background: radial-gradient(circle at top, #4b5563, #020617 60%);
+      padding: 18px 18px 4px;
+    }
+
+    .product-image {
+      width: 100%;
+      display: block;
+      border-radius: 10px;
+      object-fit: cover;
+      min-height: 145px;
+    }
+
+    .product-body {
+      padding: 16px 18px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .product-title {
+      color: var(--primary-text);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.4;
+      min-height: 36px; /* سطرين تقريبًا */
+    }
+
+    .product-price {
+      margin-top: 4px;
+      color: var(--price-color);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .product-footer {
+      margin-top: 10px;
+      display: flex;
+      justify-content: flex-start;
+    }
+
+    .add-btn {
+      background: var(--btn-bg);
+      color: var(--btn-text);
+      border: none;
+      border-radius: 6px;
+      font-size: 12px;
+      padding: 8px 16px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: background 0.18s ease, transform 0.1s ease;
+    }
+
+    .add-btn:hover {
+      background: #0069da;
+      transform: translateY(-1px);
+    }
+
+    .add-btn:active {
+      transform: translateY(0);
     }
   </style>
 </head>
 <body>
-  <header class="header" role="banner">
-    <div class="brand">
-      <div class="logo">PC-X</div>
-      <div>
-        <h1 style="margin:0;font-size:16px">PC-X</h1>
-        <div style="font-size:12px;opacity:0.85">متجر المكونات عالية الأداء</div>
+  <div class="page-shell">
+    <!-- NAVBAR -->
+    <header class="nav">
+      <div class="nav-left">
+        <div class="logo-box">PC-X</div>
       </div>
-    </div>
 
-    <div class="header-controls">
-      <div style="font-size:14px;opacity:0.95">تصفح المنتجات</div>
-      <div class="cart" aria-live="polite" title="عربة التسوق">
-        <!-- cart icon -->
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h-2l-1 2h2l3.6 7.59-1.35 2.45c-.16.29-.25.62-.25.96 0 1.1.9 2 2 2h9v-2h-9l1.1-2h6.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.3.12-.47 0-.55-.45-1-1-1h-14.31l-.94-2zm0 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>
-        <div class="count-badge" id="cart-count">0</div>
+      <div class="nav-right">
+        <span>QATRX</span>
+        <span class="tag-pill">#207BFF</span>
+        <div class="cart-box">
+          <span class="cart-icon">🛒</span>
+          <span class="cart-count" id="cartCount">0</span>
+        </div>
       </div>
-    </div>
-  </header>
+    </header>
 
-  <main>
-    <section class="intro">
-      <h2>أحدث المكونات</h2>
-      <div style="opacity:0.7">شبكة لعرض المنتجات — تصميم حديث، نظيف وتقني</div>
-    </section>
-
-    <section class="grid" id="products">
-
-      <!-- Product 1 -->
-      <article class="card">
-        <div class="media">
-          <!-- Inline SVG placeholder image -->
-          <img src='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="800" height="450"><rect width="100%" height="100%" fill="%23222" rx="12"/><text x="50%" y="50%" font-size="36" fill="%23ddd" font-family="Arial, Helvetica, sans-serif" dominant-baseline="middle" text-anchor="middle">Keyboard</text></svg>' alt="صورة المنتج: كيبورد" />
-        </div>
-        <div class="card-body">
-          <h3 class="title">Mechanical Keyboard RGB Pro</h3>
-          <div class="price">$189.99</div>
-          <div class="actions">
-            <button class="btn add-to-cart">أضف إلى السلة</button>
-            <button class="btn ghost">تفاصيل</button>
-          </div>
-        </div>
-      </article>
-
-      <!-- Product 2 -->
-      <article class="card">
-        <div class="media">
-          <img src='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="800" height="450"><rect width="100%" height="100%" fill="%23222" rx="12"/><text x="50%" y="50%" font-size="36" fill="%23ddd" font-family="Arial, Helvetica, sans-serif" dominant-baseline="middle" text-anchor="middle">RAM</text></svg>' alt="صورة المنتج: ذواكر" />
-        </div>
-        <div class="card-body">
-          <h3 class="title">G-Skill Trident Z5 RGB 32GB</h3>
-          <div class="price">$129.99</div>
-          <div class="actions">
-            <button class="btn add-to-cart">أضف إلى السلة</button>
-            <button class="btn ghost">تفاصيل</button>
-          </div>
-        </div>
-      </article>
-
-      <!-- Product 3 -->
-      <article class="card">
-        <div class="media">
-          <img src='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="800" height="450"><rect width="100%" height="100%" fill="%23222" rx="12"/><text x="50%" y="50%" font-size="36" fill="%23ddd" font-family="Arial, Helvetica, sans-serif" dominant-baseline="middle" text-anchor="middle">SSD</text></svg>' alt="صورة المنتج: SSD" />
-        </div>
-        <div class="card-body">
-          <h3 class="title">قرص SSD NVMe بسرعة عالية</h3>
-          <div class="price">$79.99</div>
-          <div class="actions">
-            <button class="btn add-to-cart">أضف إلى السلة</button>
-            <button class="btn ghost">تفاصيل</button>
-          </div>
-        </div>
-      </article>
-
-      <!-- Product 4 -->
-      <article class="card">
-        <div class="media">
-          <img src='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="800" height="450"><rect width="100%" height="100%" fill="%23222" rx="12"/><text x="50%" y="50%" font-size="36" fill="%23ddd" font-family="Arial, Helvetica, sans-serif" dominant-baseline="middle" text-anchor="middle">GPU</text></svg>' alt="صورة المنتج: GPU" />
-        </div>
-        <div class="card-body">
-          <h3 class="title">NVIDIA RTX 4080 FE</h3>
-          <div class="price">$199.99</div>
-          <div class="actions">
-            <button class="btn add-to-cart">أضف إلى السلة</button>
-            <button class="btn ghost">تفاصيل</button>
-          </div>
-        </div>
-      </article>
-
-      <!-- Product 5 -->
-      <article class="card">
-        <div class="media">
-          <img src='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="800" height="450"><rect width="100%" height="100%" fill="%23222" rx="12"/><text x="50%" y="50%" font-size="36" fill="%23ddd" font-family="Arial, Helvetica, sans-serif" dominant-baseline="middle" text-anchor="middle">Charger</text></svg>' alt="صورة المنتج: شاحن" />
-        </div>
-        <div class="card-body">
-          <h3 class="title">محطة شحن USB-C</h3>
-          <div class="price">$49.99</div>
-          <div class="actions">
-            <button class="btn add-to-cart">أضف إلى السلة</button>
-            <button class="btn ghost">تفاصيل</button>
-          </div>
-        </div>
-      </article>
-
-      <!-- Product 6 -->
-      <article class="card">
-        <div class="media">
-          <img src='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="800" height="450"><rect width="100%" height="100%" fill="%23222" rx="12"/><text x="50%" y="50%" font-size="36" fill="%23ddd" font-family="Arial, Helvetica, sans-serif" dominant-baseline="middle" text-anchor="middle">Bag</text></svg>' alt="صورة المنتج: حقيبة" />
-        </div>
-        <div class="card-body">
-          <h3 class="title">حقيبة كمبيوتر محمول مقاومة للصدمات 15 بوصة</h3>
-          <div class="price">$29.00</div>
-          <div class="actions">
-            <button class="btn add-to-cart">أضف إلى السلة</button>
-            <button class="btn ghost">تفاصيل</button>
-          </div>
-        </div>
-      </article>
-
-    </section>
-
-    <footer>
-      © PC-X — تصميم تجريبي 2025
-    </footer>
-  </main>
+    <!-- CONTENT -->
+    <main class="content">
+      <section class="products-grid" id="products">
+        <!-- يتم حقن الكروت من الجافاسكربت -->
+      </section>
+    </main>
+  </div>
 
   <script>
-    // Simple cart counter without external libraries
-    (function(){
-      const buttons = document.querySelectorAll('.add-to-cart');
-      const counterEl = document.getElementById('cart-count');
-      let count = 0;
-
-      function updateBadge(){
-        counterEl.textContent = count;
-        // small animation
-        counterEl.animate([
-          { transform: 'scale(1)' },
-          { transform: 'scale(1.25)' },
-          { transform: 'scale(1)' }
-        ], { duration: 260, easing: 'cubic-bezier(.2,.8,.2,1)'});
+    // بيانات المنتجات (يمكنك تعديل الأسماء / الأسعار / الصور فقط)
+    const products = [
+      {
+        name: "Mechanical Keyboard RGB Pro",
+        price: 189.99,
+        image:
+          "https://images.pexels.com/photos/9072726/pexels-photo-9072726.jpeg?auto=compress&cs=tinysrgb&w=800"
+      },
+      {
+        name: "G-Skill Trident Z5 RGB 32GB",
+        price: 129.99,
+        image:
+          "https://images.pexels.com/photos/10856954/pexels-photo-10856954.jpeg?auto=compress&cs=tinysrgb&w=800"
+      },
+      {
+        name: "G-Skill Trident Z5 RGB 32GB",
+        price: 129.99,
+        image:
+          "https://images.pexels.com/photos/10856964/pexels-photo-10856964.jpeg?auto=compress&cs=tinysrgb&w=800"
+      },
+      {
+        name: "Carde to Cbmmmer",
+        price: 139.99,
+        image:
+          "https://images.pexels.com/photos/788946/pexels-photo-788946.jpeg?auto=compress&cs=tinysrgb&w=800"
+      },
+      {
+        name: "NVIDIA RTX 4080 FE",
+        price: 199.99,
+        image:
+          "https://images.pexels.com/photos/5721901/pexels-photo-5721901.jpeg?auto=compress&cs=tinysrgb&w=800"
+      },
+      {
+        name: "NVIDIA RTX 4080 FE",
+        price: 199.99,
+        image:
+          "https://images.pexels.com/photos/6898859/pexels-photo-6898859.jpeg?auto=compress&cs=tinysrgb&w=800"
       }
+    ];
 
-      buttons.forEach(btn=>{
-        btn.addEventListener('click', ()=>{
-          count += 1;
-          updateBadge();
-          // visual feedback on the button
-          btn.animate([
-            { transform: 'translateY(0)' },
-            { transform: 'translateY(-3px)' },
-            { transform: 'translateY(0)' }
-          ], { duration: 220 });
-        });
+    const productsGrid = document.getElementById("products");
+    const cartCountEl = document.getElementById("cartCount");
+    let cartCount = 0;
+
+    function formatPrice(num) {
+      return "$" + num.toFixed(2);
+    }
+
+    function createProductCard(product, index) {
+      const card = document.createElement("article");
+      card.className = "product-card";
+
+      card.innerHTML = `
+        <div class="product-image-wrapper">
+          <img src="${product.image}" alt="${product.name}" class="product-image" />
+        </div>
+        <div class="product-body">
+          <h3 class="product-title">${product.name}</h3>
+          <p class="product-price">${formatPrice(product.price)}</p>
+          <div class="product-footer">
+            <button class="add-btn" data-index="${index}">ADD TO CART</button>
+          </div>
+        </div>
+      `;
+
+      return card;
+    }
+
+    function renderProducts() {
+      products.forEach((product, index) => {
+        const card = createProductCard(product, index);
+        productsGrid.appendChild(card);
       });
+    }
 
-      // expose to console for testing
-      window.__pcx = { add: ()=>{ count++; updateBadge(); } };
-    })();
+    function handleAddToCart(e) {
+      const btn = e.target;
+      if (!btn.classList.contains("add-btn")) return;
+
+      cartCount++;
+      cartCountEl.textContent = cartCount;
+
+      // تأثير بسيط على الزر عند الإضافة
+      btn.textContent = "ADDED ✔";
+      btn.disabled = true;
+      setTimeout(() => {
+        btn.textContent = "ADD TO CART";
+        btn.disabled = false;
+      }, 600);
+    }
+
+    renderProducts();
+    productsGrid.addEventListener("click", handleAddToCart);
   </script>
 </body>
 </html>
