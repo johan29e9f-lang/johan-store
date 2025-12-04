@@ -1,0 +1,8 @@
+{
+  "name": "Johan Store",
+  "short_name": "JohanStore",
+  "start_url": "/johan-store/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#007bff"
+}
